@@ -7,28 +7,53 @@ import '../repositories/user_repository.dart';
 // This is a common practice to encapsulate the data and ensure that it is not modified
 // directly from outside the class, promoting better encapsulation and data integrity.
 
-class UserViewModel {
+class UserListViewModel {
   final UserRepository _userRepository;
 
-  UserViewModel(this._userRepository);
+  UserListViewModel(this._userRepository);
 
   Future<void> addUser(User user) async {
-    await _userRepository.addUser(user);
+    try {
+      await _userRepository.addUser(user);
+    } catch (e) {
+      // Log or handle the error
+      print('Error adding user: $e');
+    }
   }
 
   Future<void> updateUser(User user) async {
-    await _userRepository.updateUser(user);
+    try {
+      await _userRepository.updateUser(user);
+    } catch (e) {
+      print("Failed to update user: $e");
+      rethrow;
+    }
   }
 
   Future<void> deleteUser(User user) async {
-    await _userRepository.deleteUser(user);
+    try {
+      await _userRepository.deleteUser(user);
+    } catch (e) {
+      print("Failed to delete user: $e");
+      rethrow;
+    }
   }
 
   Future<User> getUser(String id) async {
-    return await _userRepository.getUser(id);
+    try {
+      return await _userRepository.getUser(id);
+    } catch (e) {
+      print("Failed to get user: $e");
+      rethrow;
+    }
   }
 
   Future<List<User>> getUsers() async {
-    return await _userRepository.getUsers();
+    try {
+      return await _userRepository.getUsers();
+    } catch (e) {
+      print("Failed to get users: $e");
+      rethrow;
+    }
   }
 }
