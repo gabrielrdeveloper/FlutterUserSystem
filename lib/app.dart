@@ -6,8 +6,8 @@ import 'repositories/local_user_repository.dart';
 class MyApp extends StatelessWidget {
   final UserService userService;
 
-// O serviço é injetado no MyApp
-  const MyApp({Key? key, required this.userService}) : super(key: key);
+// O servico é injetado no MyApp
+  const MyApp({super.key, required this.userService});
 
   @override
   Widget build(BuildContext context) {
