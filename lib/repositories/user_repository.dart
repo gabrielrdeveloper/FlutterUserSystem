@@ -1,13 +1,31 @@
-//Interface para definir os métodos para manipular os dados do usuário,
-//como salvar, atualizar, deletar e buscar usuários. e posteriormente implementar base de dados firebase.
-
-//future<void> é uma funcao assincrona que não retorna nada.
+/// O `UserRepository` é responsável por fornecer uma interface de acesso
+/// aos dados do usuário, independentemente de sua origem (banco de dados local,
+/// Firebase, API externa, etc.).
+///
+/// Ele abstrai os detalhes de implementação da camada de dados, permitindo
+/// que a aplicação utilize dados sem se preocupar com a fonte.
+///
+/// Responsabilidades:
+/// - Recuperar, criar, atualizar e deletar dados de usuários.
+/// - Manter uma interface limpa e desacoplada da origem dos dados.
+///
+/// **Princípio:** O Repository NÃO contém lógica de negócio.
+/// Ele apenas busca ou manipula os dados.
 import '../models/user.dart';
 
 abstract class UserRepository {
+  /// Adiciona um novo usuário à fonte de dados.
   Future<void> addUser(User user);
-  Future<User> getUser(String id);
+
+  /// Retorna um usuário com base em seu identificador único (`uid`).
+  Future<User> getUser(String uid);
+
+  /// Atualiza os dados de um usuário existente.
   Future<void> updateUser(User user);
-  Future<void> deleteUser(User user);
+
+  /// Remove um usuário da fonte de dados com base no `uid`.
+  Future<void> deleteUser(String uid);
+
+  /// Retorna uma lista de todos os usuários disponíveis.
   Future<List<User>> getUsers();
 }

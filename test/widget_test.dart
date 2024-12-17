@@ -7,24 +7,28 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:flutter_user_system/main.dart';
+import 'package:flutter_user_system/app.dart';
+import 'package:flutter_user_system/services/user_service.dart';
+import 'package:flutter_user_system/repositories/local_user_repository.dart';
+import 'package:flutter_user_system/models/mock_user_data.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app.dart and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('MyApp smoke test', (WidgetTester tester) async {
+    // Inicializa o LocalUserRepository com os dados mockados
+    final userRepository = LocalUserRepository(initialUsers: MockUserData.users);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Cria o UserService usando o UserRepository
+    final userService = UserService(userRepository);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Build MyApp com a dependência UserService injetada
+    await tester.pumpWidget(MyApp(userService: userService));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verifica se o título da tela está sendo renderizado corretamente
+    expect(find.text('User List'), findsOneWidget);
+
+    // Verifica se os dados mockados estão na lista
+    expect(find.text('John Doe'), findsOneWidget);
+    expect(find.text('Jane Doe'), findsOneWidget);
+    expect(find.text('Alice Smith'), findsOneWidget);
   });
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'views/user_list_view.dart';
-import 'services/local_user_service.dart';
-import 'models/mock_user_data.dart';
+import 'services/user_service.dart';
+import 'repositories/local_user_repository.dart';
 
 class MyApp extends StatelessWidget {
-  final LocalUserService userService;
+  final UserService userService;
 
 // O serviço é injetado no MyApp
   const MyApp({Key? key, required this.userService}) : super(key: key);
