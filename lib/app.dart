@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'views/user_list_view.dart';
+import 'views/login_view.dart';
+import 'views/register_view.dart';
 import 'services/user_service.dart';
-import 'repositories/local_user_repository.dart';
 
 class MyApp extends StatelessWidget {
   final UserService userService;
@@ -17,8 +18,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/userList',
+      initialRoute: '/login',
       routes: {
+        '/login': (context) => LoginView(),
+        '/register_view': (context) => RegisterView(),
         '/userList': (context) => UserListView(userService: userService),
       },
     );
