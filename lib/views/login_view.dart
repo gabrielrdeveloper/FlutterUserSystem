@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/user_list_viewmodel.dart';
+import '../viewmodels/login_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -33,8 +33,9 @@ class _LoginViewState extends State<LoginView> {
       final password = _passwordController.text;
 
       try {
-        final userViewModel = context.read<UserListViewModel>();
-        final isLoggedIn = await userViewModel.validateLogin(email, password);
+        // Substituímos UserListViewModel por LoginViewModel
+        final loginViewModel = context.read<LoginViewModel>();
+        final isLoggedIn = await loginViewModel.login(email, password);
 
         if (isLoggedIn) {
           Navigator.pushReplacementNamed(context, '/userList');
@@ -57,6 +58,8 @@ class _LoginViewState extends State<LoginView> {
 
   /// Função de Login Anônimo
   void _anonymousLogin() {
+    final loginViewModel = context.read<LoginViewModel>();
+    loginViewModel.loginAnonymously();
     Navigator.pushReplacementNamed(context, '/userList');
   }
 
