@@ -14,18 +14,25 @@ void main() async {
   // Inicializa o repositório com dados mockados
   final userRepository = LocalUserRepository(initialUsers: MockUserData.users);
 
-  // Cria a instância do FamilyViewModel
-  final familyViewModel = FamilyViewModel(userRepository);
-
   // Inicia o aplicativo com os providers necessários
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => familyViewModel),
         ChangeNotifierProvider(
-          create: (_) => LoginViewModel(userRepository, familyViewModel),
+          create: (_) => UserListViewModel(userRepository),
         ),
-        ChangeNotifierProvider(create: (_) => UserListViewModel(userRepository)),
+        ChangeNotifierProvider(
+          create: (context) => FamilyViewModel(
+            userRepository,
+            context.read<UserListViewModel>(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LoginViewModel(
+            userRepository,
+            context.read<FamilyViewModel>(),
+          ),
+        ),
       ],
       child: const MyApp(),
     ),

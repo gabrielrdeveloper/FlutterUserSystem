@@ -118,4 +118,9 @@ class UserListViewModel extends ChangeNotifier {
       return false;
     }
   }
+  void removeUserById(String uid) {
+    _users.removeWhere((user) => user.uid == uid);
+    notifyListeners();
+    print("[UserListViewModel] Usuário com UID $uid removido da lista.");
+  }
 }
