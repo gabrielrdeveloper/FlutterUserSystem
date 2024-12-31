@@ -31,7 +31,7 @@ class FamilyView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0, top: 8.0),
             child: Row(
               children: [
                 Expanded(

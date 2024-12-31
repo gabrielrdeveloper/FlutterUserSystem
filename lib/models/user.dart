@@ -8,6 +8,7 @@ class User extends Equatable {
   final String email;
   final String? password;
   final List<String> familyMembers;
+  final DateTime createdAt; // Adicionado para armazenar a data de criação
 
   const User({
     required this.uid,
@@ -15,6 +16,7 @@ class User extends Equatable {
     required this.email,
     this.password,
     this.familyMembers = const [],
+    required this.createdAt, // Torna obrigatório
   });
 
   /// Converte um User para um Map (JSON)
@@ -25,6 +27,7 @@ class User extends Equatable {
       'email': email,
       'password': password,
       'familyMembers': familyMembers,
+      'createdAt': createdAt.toIso8601String(), // Salva como ISO string
     };
   }
 
@@ -36,22 +39,25 @@ class User extends Equatable {
       email: json['email'] as String,
       password: json['password'] as String?,
       familyMembers: (json['familyMembers'] as List<dynamic>?)?.cast<String>() ?? [],
+      createdAt: DateTime.parse(json['createdAt']), // Converte de string para DateTime
     );
   }
 
   /// Propriedades usadas para comparar igualdade entre objetos `User`.
   @override
-  List<Object?> get props => [uid, name, email, password, familyMembers];
+  List<Object?> get props => [uid, name, email, password, familyMembers, createdAt];
 
   /// Validação básica do modelo
   bool get isValid => uid.isNotEmpty && name.isNotEmpty && email.contains('@');
 
+  /// Metodo para criar uma cópia de um objeto com alterações específicas
   User copyWith({
     String? uid,
     String? name,
     String? email,
     String? password,
     List<String>? familyMembers,
+    DateTime? createdAt,
   }) {
     return User(
       uid: uid ?? this.uid,
@@ -59,6 +65,7 @@ class User extends Equatable {
       email: email ?? this.email,
       password: password ?? this.password,
       familyMembers: familyMembers ?? this.familyMembers,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

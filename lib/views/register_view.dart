@@ -42,6 +42,7 @@ class _RegisterViewState extends State<RegisterView> {
           name: name,
           email: email,
           password: password,
+          createdAt: DateTime.now(),
         );
         print('Registering user: ${newUser.toJson()}');
 
@@ -49,15 +50,33 @@ class _RegisterViewState extends State<RegisterView> {
         final isAdded = await userViewModel.addUser(newUser);
 
         if (isAdded) {
-          Navigator.pushReplacementNamed(context, '/userList');
+          // Exibe um alerta de sucesso
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Conta Criada'),
+                content: const Text('Sua conta foi criada com sucesso!'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Fecha o diálogo
+                      Navigator.pop(context); // Retorna para a tela de login
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('User already exists')),
+            const SnackBar(content: Text('Email já está em uso.')),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('An error occurred: $e')),
+          SnackBar(content: Text('Ocorreu um erro: $e')),
         );
       } finally {
         setState(() {
@@ -70,7 +89,7 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      appBar: AppBar(title: const Text('Registrar')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -79,48 +98,48 @@ class _RegisterViewState extends State<RegisterView> {
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Nome'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Por favor, insira seu nome.';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Por favor, insira seu email.';
                   }
                   if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email';
+                    return 'Por favor, insira um email válido.';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Senha'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'Por favor, insira sua senha.';
                   }
                   if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
+                    return 'A senha deve ter pelo menos 6 caracteres.';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               if (_isLoading)
-                CircularProgressIndicator()
+                const CircularProgressIndicator()
               else
                 ElevatedButton(
                   onPressed: _register,
-                  child: Text('Register'),
+                  child: const Text('Registrar'),
                 ),
             ],
           ),
