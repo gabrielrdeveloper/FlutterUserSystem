@@ -142,9 +142,9 @@ Essa estrutura modular garante que cada componente tenha responsabilidades bem d
 ### Passos:
 1. Clone este repositório.
 2. Execute o comando abaixo para instalar as dependências:
-```bash
-flutter pub get
+      ```bash
+      flutter pub get
 
 3.	Inicie o aplicativo com:
-```bash
-flutter run
+      ```bash
+      flutter run
