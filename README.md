@@ -1,10 +1,10 @@
 # Gerenciamento de Usuários e Familiares
 
-Este projeto é um sistema simples para gerenciar usuários e seus dependentes, permitindo o cadastro, busca e gerenciamento de familiares diretamente no sistema. É ideal para aplicações que necessitam de um controle de dependentes, como sistemas de saúde, educação ou benefícios.
+Este projeto foi desenvolvido como parte de um processo seletivo para aprender e aplicar os fundamentos de desenvolvimento em Flutter. Ele implementa um sistema simples para gerenciar usuários e seus dependentes, permitindo o cadastro, busca e gerenciamento de familiares diretamente no sistema.
 
 ## 🎯 Objetivo do Projeto
 
-O objetivo principal do projeto é criar uma aplicação que permite:
+O objetivo principal é criar uma aplicação que permita:
 - Cadastrar novos usuários no sistema.
 - Gerenciar familiares de um usuário logado.
 - Listar todos os usuários registrados no sistema.
@@ -67,40 +67,40 @@ O projeto segue uma abordagem baseada em **MVVM (Model-View-ViewModel)**:
   Abstração da fonte de dados, permitindo que o sistema funcione independentemente de como ou onde os dados estão armazenados (neste caso, usando `Shared Preferences`).
 
 ## 🌟 Estrutura do Projeto
-lib/
-├── main.dart                    # Arquivo principal do projeto
-├── app.dart                     # Configurações iniciais do app
-├── models/
-│   ├── user.dart                # Modelo de dados para o usuário
-│   ├── mock_user_data.dart      # Dados mockados para teste inicial
-├── repositories/
-│   ├── user_repository.dart     # Interface do repositório
-│   ├── local_user_repository.dart # Implementação do repositório local
-├── viewmodels/
-│   ├── auth_login_viewmodel.dart  # Gerenciamento de login
-│   ├── user_list_viewmodel.dart   # Gerenciamento da lista de usuários
-│   ├── family_list_viewmodel.dart # Gerenciamento de familiares
-├── views/
-│   ├── login/
-│   │   ├── login_view.dart       # Tela de login
-│   ├── register/
-│   │   ├── register_view.dart    # Tela de registro de usuários
-│   ├── user/
-│   │   ├── user_list_view.dart   # Lista de usuários
-│   │   ├── user_profile_view.dart # Tela de perfil do usuário
-│   ├── family/
-│       ├── family_list_view.dart # Tela de gerenciamento de familiares
+    lib/
+    ├── main.dart                      # Arquivo principal do projeto
+    ├── app.dart                       # Configurações iniciais do app
+    ├── models/                        # Modelos de dados
+    │   ├── user.dart                  # Modelo de dados para o usuário
+    │   ├── mock_user_data.dart        # Dados mockados para teste inicial
+    ├── repositories/                  # Camada de repositórios
+    │   ├── user_repository.dart       # Interface do repositório
+    │   ├── local_user_repository.dart # Implementação do repositório local
+    ├── viewmodels/                    # Gerenciamento de estado e lógica
+    │   ├── auth_login_viewmodel.dart  # Gerenciamento de login
+    │   ├── user_list_viewmodel.dart   # Gerenciamento da lista de usuários
+    │   ├── family_list_viewmodel.dart # Gerenciamento de familiares
+    ├── views/                         # Telas do aplicativo
+    │   ├── login/
+    │   │   ├── login_view.dart        # Tela de login
+    │   ├── register/
+    │   │   ├── register_view.dart     # Tela de registro de usuários
+    │   ├── user/
+    │   │   ├── user_list_view.dart    # Lista de usuários
+    │   │   ├── user_profile_view.dart # Tela de perfil do usuário
+    │   ├── family/
+    │       ├── family_list_view.dart  # Tela de gerenciamento de familiares
 
 
 ## Explicação dos Diretórios
 
 - **`lib/`**: Diretório principal do projeto.
-  - **`main.dart`**: Ponto de entrada da aplicação.
-  - **`app.dart`**: Configurações de inicialização, como o tema global.
-  - **`models/`**: Contém as classes que representam os dados do sistema.
-  - **`repositories/`**: Implementação e abstração de acesso a dados.
-  - **`viewmodels/`**: Lógica de negócio e gerenciamento de estado.
-  - **`views/`**: Interface do usuário (UI), dividida por contexto.
+- **`main.dart`**: Ponto de entrada da aplicação.
+- **`app.dart`**: Configurações de inicialização, como o tema global.
+- **`models/`**: Contém as classes que representam os dados do sistema.
+- **`repositories/`**: Implementação e abstração de acesso a dados.
+- **`viewmodels/`**: Lógica de negócio e gerenciamento de estado.
+- **`views/`**: Interface do usuário (UI), dividida por contexto.
 
 ### Detalhamento
 
@@ -119,14 +119,14 @@ lib/
 
 #### **`views/`**
 - **`login/`**
-  - **`login_view.dart`**: Tela de login com autenticação e suporte a login anônimo.
+- **`login_view.dart`**: Tela de login com autenticação e suporte a login anônimo.
 - **`register/`**
-  - **`register_view.dart`**: Tela para registrar novos usuários.
+- **`register_view.dart`**: Tela para registrar novos usuários.
 - **`user/`**
-  - **`user_list_view.dart`**: Lista todos os usuários cadastrados no sistema, com suporte a busca.
-  - **`user_profile_view.dart`**: Exibe detalhes do usuário logado e oferece a opção de logout.
+- **`user_list_view.dart`**: Lista todos os usuários cadastrados no sistema, com suporte a busca.
+- **`user_profile_view.dart`**: Exibe detalhes do usuário logado e oferece a opção de logout.
 - **`family/`**
-  - **`family_list_view.dart`**: Tela para adicionar ou remover dependentes do usuário logado.
+- **`family_list_view.dart`**: Tela para adicionar ou remover dependentes do usuário logado.
 
 ## Organização do Código
 
@@ -142,8 +142,9 @@ Essa estrutura modular garante que cada componente tenha responsabilidades bem d
 ### Passos:
 1. Clone este repositório.
 2. Execute o comando abaixo para instalar as dependências:
-   ```bash
-   flutter pub get
+```bash
+flutter pub get
 
 3.	Inicie o aplicativo com:
-  	   flutter run
+```bash
+flutter run
