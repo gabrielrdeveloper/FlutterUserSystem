@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/user_list_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({super.key}); // Adicionado const
+  const LoginView({super.key});
 
   @override
   _LoginViewState createState() => _LoginViewState();
@@ -33,7 +33,6 @@ class _LoginViewState extends State<LoginView> {
       final password = _passwordController.text;
 
       try {
-        // Chama a lógica de login da ViewModel
         final userViewModel = context.read<UserListViewModel>();
         final isLoggedIn = await userViewModel.validateLogin(email, password);
 
@@ -41,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
           Navigator.pushReplacementNamed(context, '/userList');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Invalid email or password')),
+            const SnackBar(content: Text('Invalid email or password')),
           );
         }
       } catch (e) {
@@ -56,59 +55,96 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  /// Função de Login Anônimo
+  void _anonymousLogin() {
+    Navigator.pushReplacementNamed(context, '/userList');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
+        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+        child: Column(
+          children: [
+            // Parte Superior: Ícone
+            Expanded(
+              child: Center(
+                child: const Icon(Icons.lock, size: 150, color: Colors.blue),
               ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              if (_isLoading)
-                CircularProgressIndicator()
-              else
-                ElevatedButton(
-                  onPressed: _login,
-                  child: Text('Login'),
+            ),
+            // Parte do Meio: Campos de Login e Senha
+            Expanded(
+              child: Center(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(labelText: 'Password'),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters long';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/register_view');
-                },
-                child: Text('Don\'t have an account? Register'),
               ),
-            ],
-          ),
+            ),
+            // Parte Inferior: Botões
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (_isLoading)
+                    const CircularProgressIndicator()
+                  else ...[
+                    ElevatedButton(
+                      onPressed: _login,
+                      child: const Text('Login'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/register_view');
+                      },
+                      child: const Text('Don\'t have an account? Register'),
+                    ),
+                    const Spacer(),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _anonymousLogin,
+                      child: const Text('Take a tour'),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

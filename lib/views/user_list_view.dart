@@ -22,7 +22,8 @@ class _UserListViewState extends State<UserListView> {
 
   @override
   Widget build(BuildContext context) {
-    final userViewModel = context.watch<UserListViewModel>();
+    final userViewModel = context.watch<
+        UserListViewModel>();
     final loginViewModel = context.watch<LoginViewModel>();
     final loggedInUser = loginViewModel.loggedInUser;
     final users = userViewModel.users;

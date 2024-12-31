@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_user_system/views/profile_view.dart';
 import 'package:provider/provider.dart';
 import 'user_list_view.dart';
 import 'family_view.dart';
-import '../viewmodels/login_viewmodel.dart';
+import 'profile_view.dart';
 
 class MainTabBar extends StatelessWidget {
+  const MainTabBar({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final loginViewModel = context.watch<LoginViewModel>();
-    final user = loginViewModel.loggedInUser;
-
     return DefaultTabController(
       length: 3, // Número de abas
       child: Scaffold(
@@ -28,10 +26,10 @@ class MainTabBar extends StatelessWidget {
           children: [
             // Aba 1: Lista de Usuários
             UserListView(),
-            // Aba 3: Meus Familiares
+            // Aba 2: Meus Familiares
             FamilyView(),
-            // Aba 3: Perfil
-            ProfileView(user: user),
+            // Aba 3: Perfil ()
+            ProfileView(),
           ],
         ),
       ),
