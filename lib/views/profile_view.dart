@@ -8,6 +8,7 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Verifica se o usuário é nulo
     if (user == null) {
       return const Center(child: Text('Nenhum usuário logado.'));
     }
@@ -16,8 +17,8 @@ class ProfileView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Nome: ${user.name}', style: const TextStyle(fontSize: 18)),
-          Text('Email: ${user.email}', style: const TextStyle(fontSize: 18)),
+          Text('Nome: ${user!.name}', style: const TextStyle(fontSize: 18)),
+          Text('Email: ${user!.email}', style: const TextStyle(fontSize: 18)),
         ],
       ),
     );

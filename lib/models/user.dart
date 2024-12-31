@@ -7,8 +7,7 @@ class User extends Equatable {
   final String name;
   final String email;
   final String? password;
-  final List<String> familyMembers = [];
-
+  final List<String> familyMembers;
 
   const User({
     required this.uid,
@@ -42,8 +41,24 @@ class User extends Equatable {
 
   /// Propriedades usadas para comparar igualdade entre objetos `User`.
   @override
-  List<Object?> get props => [uid, name, email, password];
+  List<Object?> get props => [uid, name, email, password, familyMembers];
 
   /// Validação básica do modelo
   bool get isValid => uid.isNotEmpty && name.isNotEmpty && email.contains('@');
+
+  User copyWith({
+    String? uid,
+    String? name,
+    String? email,
+    String? password,
+    List<String>? familyMembers,
+  }) {
+    return User(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      familyMembers: familyMembers ?? this.familyMembers,
+    );
+  }
 }

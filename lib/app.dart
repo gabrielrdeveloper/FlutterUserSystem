@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'views/user_list_view.dart';
 import 'views/login_view.dart';
 import 'views/register_view.dart';
+import 'views/maintabbar.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -16,9 +17,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginView(),
-        '/register_view': (context) => const RegisterView(),
-        '/userList': (context) => const UserListView(),
+        '/login': (context) => LoginView(),
+        '/register_view': (context) => RegisterView(),
+        '/userList': (context) => MainTabBar(),
       },
     );
   }

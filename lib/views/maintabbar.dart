@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_user_system/views/profile_view.dart';
 import 'package:provider/provider.dart';
 import 'user_list_view.dart';
 import 'family_view.dart';
@@ -17,9 +18,9 @@ class MainTabBar extends StatelessWidget {
           title: const Text('Gerenciamento de Usuários'),
           bottom: const TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.person), text: 'Perfil'),
               Tab(icon: Icon(Icons.list), text: 'Usuários'),
               Tab(icon: Icon(Icons.family_restroom), text: 'Familiares'),
+              Tab(icon: Icon(Icons.person), text: 'Perfil'),
             ],
           ),
         ),

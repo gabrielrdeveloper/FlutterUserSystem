@@ -1,23 +1,23 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/family_viewmodel.dart';
+
 class FamilyView extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final familyViewModel = context.watch<FamilyViewModel>();
-
-    if (familyViewModel.loggedInUser == null) {
-      return const Center(child: Text("Você precisa estar logado para usar essa funcionalidade."));
-    }
+    final familyMembers = familyViewModel.familyMembers;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Meus Familiares')),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: familyViewModel.familyMembers.length,
+              itemCount: familyMembers.length,
               itemBuilder: (context, index) {
-                final member = familyViewModel.familyMembers[index];
+                final member = familyMembers[index];
                 return ListTile(
                   title: Text(member),
                   trailing: IconButton(
