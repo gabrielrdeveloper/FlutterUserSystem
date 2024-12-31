@@ -28,4 +28,11 @@ abstract class UserRepository {
 
   /// Retorna uma lista de todos os usuários disponíveis.
   Future<List<User>> getUsers();
+
+  /// Busca usuários com base em um filtro (opcional).
+  Future<List<User>> searchUsers(String query);
+
+  /// Retorna o número total de usuários (opcional).
+  Future<int> countUsers();
 }
+

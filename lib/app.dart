@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'views/user_list_view.dart';
 import 'views/login_view.dart';
 import 'views/register_view.dart';
-import 'services/user_service.dart';
 
 class MyApp extends StatelessWidget {
-  final UserService userService;
-
-// O servico é injetado no MyApp
-  const MyApp({super.key, required this.userService});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +16,10 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => LoginView(),
-        '/register_view': (context) => RegisterView(),
-        '/userList': (context) => UserListView(userService: userService),
+        '/login': (context) => const LoginView(),
+        '/register_view': (context) => const RegisterView(),
+        '/userList': (context) => const UserListView(),
       },
     );
   }
 }
-

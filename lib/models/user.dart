@@ -6,42 +6,44 @@ class User extends Equatable {
   final String uid;
   final String name;
   final String email;
+  final String? password;
+  final List<String> familyMembers = [];
+
 
   const User({
     required this.uid,
     required this.name,
     required this.email,
+    this.password,
+    this.familyMembers = const [],
   });
 
-  /// Metodo opcional para converter o objeto `User` em um mapa JSON.
-  /// Útil para integração com bancos de dados como Firebase Firestore.
+  /// Converte um User para um Map (JSON)
   Map<String, dynamic> toJson() {
     return {
       'uid': uid,
       'name': name,
       'email': email,
+      'password': password,
+      'familyMembers': familyMembers,
     };
   }
 
-  /// Factory que cria um objeto `User` a partir de um mapa JSON.
-  /// Útil para desserialização de dados vindos de um banco ou API.
+  /// Cria um User a partir de um Map (JSON)
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       uid: json['uid'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
+      password: json['password'] as String?,
+      familyMembers: (json['familyMembers'] as List<dynamic>?)?.cast<String>() ?? [],
     );
   }
 
-  // Metodo toString sobrescrito para fornecer uma representação textual do objeto.
-  /// Útil para debugging e logs.
-  @override
-  String toString() {
-    return 'User(uid: $uid, name: $name, email: $email)';
-  }
-
   /// Propriedades usadas para comparar igualdade entre objetos `User`.
-  /// Implementa o `Equatable` para facilitar comparações.
   @override
-  List<Object?> get props => [uid, name, email];
+  List<Object?> get props => [uid, name, email, password];
+
+  /// Validação básica do modelo
+  bool get isValid => uid.isNotEmpty && name.isNotEmpty && email.contains('@');
 }

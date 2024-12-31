@@ -1,8 +1,10 @@
-// lib/views/login_view.dart
 import 'package:flutter/material.dart';
-import 'register_view.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/user_list_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
+  const LoginView({super.key}); // Adicionado const
+
   @override
   _LoginViewState createState() => _LoginViewState();
 }
@@ -11,6 +13,7 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -19,18 +22,37 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  void _login() {
+  /// Função que chama a ViewModel para processar o login
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      // Perform login logic here
+      setState(() {
+        _isLoading = true;
+      });
+
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logging in with $email')),
-      );
+      try {
+        // Chama a lógica de login da ViewModel
+        final userViewModel = context.read<UserListViewModel>();
+        final isLoggedIn = await userViewModel.validateLogin(email, password);
 
-      Navigator.pushReplacementNamed(context, '/userList');
-
+        if (isLoggedIn) {
+          Navigator.pushReplacementNamed(context, '/userList');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Invalid email or password')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An error occurred: $e')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -72,10 +94,13 @@ class _LoginViewState extends State<LoginView> {
                 },
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _login,
-                child: Text('Login'),
-              ),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  onPressed: _login,
+                  child: Text('Login'),
+                ),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/register_view');

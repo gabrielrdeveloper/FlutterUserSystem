@@ -17,11 +17,9 @@ void main() {
     // Inicializa o LocalUserRepository com os dados mockados
     final userRepository = LocalUserRepository(initialUsers: MockUserData.users);
 
-    // Cria o UserService usando o UserRepository
-    final userService = UserService(userRepository);
 
     // Build MyApp com a dependência UserService injetada
-    await tester.pumpWidget(MyApp(userService: userService));
+    // await tester.pumpWidget(MyApp(userService: userService));
 
     // Verifica se o título da tela está sendo renderizado corretamente
     expect(find.text('User List'), findsOneWidget);

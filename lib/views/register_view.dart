@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../services/user_service.dart';
+import 'package:provider/provider.dart';
 import '../models/user.dart';
+import '../viewmodels/user_list_viewmodel.dart';
 
 class RegisterView extends StatefulWidget {
-  final UserService userService;
-
-  const RegisterView({super.key, required this.userService});
+  const RegisterView({super.key});
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -16,6 +15,7 @@ class _RegisterViewState extends State<RegisterView> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,17 +25,45 @@ class _RegisterViewState extends State<RegisterView> {
     super.dispose();
   }
 
-  void _register() async {
+  Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
       final name = _nameController.text;
       final email = _emailController.text;
+      final password = _passwordController.text;
+      final userViewModel = context.read<UserListViewModel>();
 
-      // Adiciona o novo usuário ao UserService
-      final newUser = User(uid: DateTime.now().toString(), name: name, email: email);
-      await widget.userService.addUserIfNotExists(newUser);
+      try {
+        final newUser = User(
+          uid: DateTime.now().toString(),
+          name: name,
+          email: email,
+          password: password,
+        );
+        print('Registering user: ${newUser.toJson()}');
 
-      // Navega para a lista de usuários
-      Navigator.pushReplacementNamed(context, '/userList');
+        // Adiciona o novo usuário
+        final isAdded = await userViewModel.addUser(newUser);
+
+        if (isAdded) {
+          Navigator.pushReplacementNamed(context, '/userList');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('User already exists')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An error occurred: $e')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -87,10 +115,13 @@ class _RegisterViewState extends State<RegisterView> {
                 },
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _register,
-                child: Text('Register'),
-              ),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  onPressed: _register,
+                  child: Text('Register'),
+                ),
             ],
           ),
         ),

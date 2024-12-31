@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'app.dart';
-import 'services/user_service.dart';
 import 'repositories/local_user_repository.dart';
+import 'viewmodels/user_list_viewmodel.dart';
 import 'models/mock_user_data.dart';
 
-void main() {
-  // Inicializa o LocalUserRepository com os dados mockados
+void main() async {
+  // Inicializa o framework do Flutter
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa o repositório e a ViewModel
   final userRepository = LocalUserRepository(initialUsers: MockUserData.users);
+  final userListViewModel = UserListViewModel(userRepository);
 
-  // Cria o UserService usando o UserRepository
-  final userService = UserService(userRepository);
-
-  runApp(MyApp(userService: userService));
+  // Inicia o aplicativo
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => userListViewModel),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }

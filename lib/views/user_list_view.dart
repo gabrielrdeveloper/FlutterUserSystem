@@ -1,39 +1,61 @@
-// views/user_list_view.dart
 import 'package:flutter/material.dart';
-import '../services/user_service.dart';
-import '../models/user.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/user_list_viewmodel.dart';
 
-class UserListView extends StatelessWidget {
-  final UserService userService;
+class UserListView extends StatefulWidget {
+  const UserListView({super.key});
 
-  const UserListView({super.key, required this.userService});
+  @override
+  _UserListViewState createState() => _UserListViewState();
+}
+
+class _UserListViewState extends State<UserListView> {
+  @override
+  void initState() {
+    super.initState();
+    // Carrega os usuários ao iniciar a tela
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserListViewModel>().loadUsers();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final userViewModel = context.watch<UserListViewModel>();
+    final users = userViewModel.users;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('User List')),
-      body: FutureBuilder<List<User>>(
-        future: userService.getSortedUsers(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          final users = snapshot.data ?? [];
-          if (users.isEmpty) {
-            return const Center(child: Text('No users available.'));
-          }
-          return ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              return ListTile(
-                title: Text(user.name),
-                subtitle: Text(user.email),
-              );
+      appBar: AppBar(
+        title: const Text('User List'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.pushNamed(context, '/register_view');
             },
+          ),
+        ],
+      ),
+      body: userViewModel.users.isEmpty
+          ? const Center(child: Text('No users available.'))
+          : ListView.builder(
+        itemCount: users.length,
+        itemBuilder: (context, index) {
+          final user = users[index];
+          return ListTile(
+            title: Text(user.name),
+            subtitle: Text(user.email),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                final success = await userViewModel.deleteUser(user.uid);
+                if (!success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to delete user')),
+                  );
+                }
+              },
+            ),
           );
         },
       ),
