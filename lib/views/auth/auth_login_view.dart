@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/login_viewmodel.dart';
+import '../../viewmodels/auth_login_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -22,7 +22,6 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  /// Função que chama a ViewModel para processar o login
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -31,23 +30,17 @@ class _LoginViewState extends State<LoginView> {
 
       final email = _emailController.text;
       final password = _passwordController.text;
+      final loginViewModel = context.read<LoginViewModel>();
 
       try {
-        // Substituímos UserListViewModel por LoginViewModel
-        final loginViewModel = context.read<LoginViewModel>();
-        final isLoggedIn = await loginViewModel.login(email, password);
-
-        if (isLoggedIn) {
-          Navigator.pushReplacementNamed(context, '/userList');
-        } else {
+        await loginViewModel.login(email, password);
+        if (loginViewModel.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid email or password')),
+            SnackBar(content: Text(loginViewModel.errorMessage!)),
           );
+        } else {
+          Navigator.pushReplacementNamed(context, '/userList');
         }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('An error occurred: $e')),
-        );
       } finally {
         setState(() {
           _isLoading = false;
@@ -56,7 +49,6 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  /// Função de Login Anônimo
   void _anonymousLogin() {
     final loginViewModel = context.read<LoginViewModel>();
     loginViewModel.loginAnonymously();
@@ -65,19 +57,19 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final loginViewModel = context.watch<LoginViewModel>();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
         child: Column(
           children: [
-            // Parte Superior: Ícone
             Expanded(
               child: Center(
                 child: const Icon(Icons.lock, size: 150, color: Colors.blue),
               ),
             ),
-            // Parte do Meio: Campos de Login e Senha
             Expanded(
               child: Center(
                 child: Form(
@@ -90,10 +82,10 @@ class _LoginViewState extends State<LoginView> {
                         decoration: const InputDecoration(labelText: 'Email'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return 'Por favor, insira seu email';
                           }
-                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                            return 'Please enter a valid email';
+                          if (!loginViewModel.isEmailValid(value)) {
+                            return 'Por favor, insira um email válido';
                           }
                           return null;
                         },
@@ -101,14 +93,14 @@ class _LoginViewState extends State<LoginView> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(labelText: 'Password'),
+                        decoration: const InputDecoration(labelText: 'Senha'),
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
+                            return 'Por favor, insira sua senha';
                           }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters long';
+                          if (!loginViewModel.isPasswordValid(value)) {
+                            return 'A senha deve ter pelo menos 6 caracteres';
                           }
                           return null;
                         },
@@ -118,7 +110,6 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
             ),
-            // Parte Inferior: Botões
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -128,20 +119,18 @@ class _LoginViewState extends State<LoginView> {
                   else ...[
                     ElevatedButton(
                       onPressed: _login,
-                      child: const Text('Login'),
+                      child: const Text('Entrar'),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/register_view');
-                      },
-                      child: const Text('Don\'t have an account? Register'),
+                      onPressed: () => Navigator.pushNamed(context, '/register_view'),
+                      child: const Text('Não tem uma conta? Cadastre-se'),
                     ),
                     const Spacer(),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _anonymousLogin,
-                      child: const Text('Take a tour'),
+                      child: const Text('Entrar como visitante'),
                     ),
                   ],
                 ],

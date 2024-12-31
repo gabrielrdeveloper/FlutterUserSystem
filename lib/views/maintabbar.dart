@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'user_list_view.dart';
-import 'family_view.dart';
-import 'profile_view.dart';
+import 'user/user_list_view.dart';
+import 'family/family_list_view.dart';
+import 'user/user_profile_view.dart';
 
 class MainTabBar extends StatelessWidget {
   const MainTabBar({super.key});
@@ -10,7 +9,7 @@ class MainTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Número de abas
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Gerenciamento de Usuários'),
@@ -24,11 +23,8 @@ class MainTabBar extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            // Aba 1: Lista de Usuários
             UserListView(),
-            // Aba 2: Meus Familiares
             FamilyView(),
-            // Aba 3: Perfil ()
             ProfileView(),
           ],
         ),

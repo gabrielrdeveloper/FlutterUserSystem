@@ -1,6 +1,8 @@
 import '../models/user.dart';
 
+/// Mock de dados para usuários, usado em testes ou inicializações.
 class MockUserData {
+  /// Lista de usuários simulados com dados pré-definidos.
   static final List<User> users = [
     User(
       uid: '1',

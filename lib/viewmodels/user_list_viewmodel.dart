@@ -8,7 +8,7 @@ class UserListViewModel extends ChangeNotifier {
   List<User> _users = [];
   List<User> get users => _users;
 
-  List<User> _originalUsers = []; // Lista para manter a cópia original para buscas
+  List<User> _originalUsers = [];
 
   UserListViewModel(this._userRepository);
 
@@ -16,10 +16,11 @@ class UserListViewModel extends ChangeNotifier {
   Future<void> loadUsers() async {
     try {
       _users = await _userRepository.getUsers();
-      _originalUsers = List.from(_users); // Mantém uma cópia para buscas
-      notifyListeners(); // Atualiza a interface
+      _originalUsers = List.from(_users);
+      notifyListeners();
+      print("[UserListViewModel] Usuários carregados: ${_users.length}");
     } catch (e) {
-      print('Error loading users: $e');
+      print("[UserListViewModel] Erro ao carregar usuários: $e");
       _users = [];
       _originalUsers = [];
     }
@@ -27,30 +28,31 @@ class UserListViewModel extends ChangeNotifier {
 
   /// Busca usuários com base em uma consulta
   void searchUsers(String query) {
-    if (query.isEmpty) {
-      _users = List.from(_originalUsers); // Restaura a lista original
-    } else {
-      _users = _originalUsers.where((user) =>
-          user.name.toLowerCase().contains(query.toLowerCase())).toList();
-    }
-    notifyListeners(); // Atualiza a interface
+    _users = query.isEmpty
+        ? List.from(_originalUsers)
+        : _originalUsers
+        .where((user) => user.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    notifyListeners();
+    print("[UserListViewModel] Busca realizada: $query");
   }
 
   /// Adiciona um novo usuário
   Future<bool> addUser(User user) async {
-    try {
-      // Verifica se já existe um usuário com o mesmo email
-      if (_users.any((u) => u.email == user.email)) {
-        return false; // Usuário já existe
-      }
+    if (_users.any((u) => u.email == user.email)) {
+      print("[UserListViewModel] Email já cadastrado: ${user.email}");
+      return false;
+    }
 
-      await _userRepository.addUser(user); // Adiciona ao repositório
-      _users.add(user); // Atualiza a lista local
-      _originalUsers.add(user); // Atualiza a lista original
-      notifyListeners(); // Atualiza a interface
+    try {
+      await _userRepository.addUser(user);
+      _users.add(user);
+      _originalUsers.add(user);
+      notifyListeners();
+      print("[UserListViewModel] Usuário adicionado: ${user.name}");
       return true;
     } catch (e) {
-      print('Error adding user: $e');
+      print("[UserListViewModel] Erro ao adicionar usuário: $e");
       return false;
     }
   }
@@ -58,18 +60,18 @@ class UserListViewModel extends ChangeNotifier {
   /// Atualiza um usuário existente
   Future<bool> updateUser(User user) async {
     try {
-      await _userRepository.updateUser(user); // Atualiza no repositório
+      await _userRepository.updateUser(user);
 
-      // Atualiza o usuário na lista local
       final index = _users.indexWhere((u) => u.uid == user.uid);
       if (index != -1) {
         _users[index] = user;
-        _originalUsers[index] = user; // Também atualiza na lista original
+        _originalUsers[index] = user;
         notifyListeners();
+        print("[UserListViewModel] Usuário atualizado: ${user.name}");
       }
       return true;
     } catch (e) {
-      print('Error updating user: $e');
+      print("[UserListViewModel] Erro ao atualizar usuário: $e");
       return false;
     }
   }
@@ -77,50 +79,35 @@ class UserListViewModel extends ChangeNotifier {
   /// Remove um usuário pelo UID
   Future<bool> deleteUser(String uid) async {
     try {
-      await _userRepository.deleteUser(uid); // Remove do repositório
-
-      // Remove da lista local
+      await _userRepository.deleteUser(uid);
       _users.removeWhere((user) => user.uid == uid);
       _originalUsers.removeWhere((user) => user.uid == uid);
       notifyListeners();
+      print("[UserListViewModel] Usuário removido: $uid");
       return true;
     } catch (e) {
-      print('Error deleting user: $e');
+      print("[UserListViewModel] Erro ao remover usuário: $e");
       return false;
-    }
-  }
-
-  /// Busca um usuário pelo UID
-  User? findUserById(String uid) {
-    try {
-      return _users.firstWhere((user) => user.uid == uid);
-    } catch (e) {
-      print('User not found: $e');
-      return null;
     }
   }
 
   /// Ordena os usuários pelo nome
   void sortUsersByName() {
     _users.sort((a, b) => a.name.compareTo(b.name));
-    notifyListeners(); // Atualiza a interface
+    notifyListeners();
+    print("[UserListViewModel] Usuários ordenados por nome.");
   }
 
+  /// Valida login com e-mail e senha
   Future<bool> validateLogin(String email, String password) async {
     try {
-      // Busca todos os usuários do repositório
       final users = await _userRepository.getUsers();
-
-      // Verifica se há algum usuário com o e-mail e senha fornecidos
-      return users.any((user) => user.email == email && user.password == password);
+      final isValid = users.any((user) => user.email == email && user.password == password);
+      print("[UserListViewModel] Login ${isValid ? 'válido' : 'inválido'} para o email: $email");
+      return isValid;
     } catch (e) {
-      print('Login validation failed: $e');
+      print("[UserListViewModel] Erro ao validar login: $e");
       return false;
     }
-  }
-  void removeUserById(String uid) {
-    _users.removeWhere((user) => user.uid == uid);
-    notifyListeners();
-    print("[UserListViewModel] Usuário com UID $uid removido da lista.");
   }
 }

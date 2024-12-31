@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/login_viewmodel.dart';
+import '../../viewmodels/auth_login_viewmodel.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -10,7 +10,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  IconData _currentIcon = Icons.person_outline; // Ícone inicial
+  IconData _currentIcon = Icons.person_outline;
 
   final List<IconData> _iconOptions = [
     Icons.person_outline,
@@ -18,36 +18,26 @@ class _ProfileViewState extends State<ProfileView> {
     Icons.sentiment_satisfied_outlined,
   ];
 
-  void _showIconPicker() {
+  void _showIconPicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _iconOptions.map((icon) {
-            return ListTile(
-              leading: Icon(icon, size: 30),
-              title: const Text('Escolher este ícone'),
-              onTap: () {
-                setState(() {
-                  _currentIcon = icon;
-                });
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        );
-      },
+      builder: (_) => IconPicker(
+        icons: _iconOptions,
+        onIconSelected: (icon) {
+          setState(() {
+            _currentIcon = icon;
+          });
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 
-  /// Método para formatar o nome
   String _formatName(String name) {
     return name
         .split(' ')
-        .map((word) => word.isNotEmpty
-        ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-        : '')
+        .map((word) =>
+    word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}' : '')
         .join(' ');
   }
 
@@ -72,7 +62,7 @@ class _ProfileViewState extends State<ProfileView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onLongPress: _showIconPicker,
+                    onLongPress: () => _showIconPicker(context),
                     child: Icon(
                       _currentIcon,
                       size: 120,
@@ -88,7 +78,7 @@ class _ProfileViewState extends State<ProfileView> {
                     )
                   else ...[
                     Text(
-                      _formatName(user.name), // Exibe o nome formatado
+                      _formatName(user.name),
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -142,6 +132,31 @@ class _ProfileViewState extends State<ProfileView> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class IconPicker extends StatelessWidget {
+  final List<IconData> icons;
+  final ValueChanged<IconData> onIconSelected;
+
+  const IconPicker({
+    super.key,
+    required this.icons,
+    required this.onIconSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: icons.map((icon) {
+        return ListTile(
+          leading: Icon(icon, size: 30),
+          title: const Text('Escolher este ícone'),
+          onTap: () => onIconSelected(icon),
+        );
+      }).toList(),
     );
   }
 }

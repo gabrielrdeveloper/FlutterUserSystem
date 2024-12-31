@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'views/user_list_view.dart';
-import 'views/login_view.dart';
-import 'views/register_view.dart';
+import 'views/user/user_list_view.dart';
+import 'views/auth/auth_login_view.dart';
+import 'views/auth/auth_register_view.dart';
 import 'views/maintabbar.dart';
 
 class MyApp extends StatelessWidget {

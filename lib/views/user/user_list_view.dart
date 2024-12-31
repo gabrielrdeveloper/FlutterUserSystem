@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/user_list_viewmodel.dart';
-import '../viewmodels/login_viewmodel.dart';
+import '../../viewmodels/user_list_viewmodel.dart';
+import '../../viewmodels/auth_login_viewmodel.dart';
 
 class UserListView extends StatefulWidget {
   const UserListView({super.key});
@@ -22,8 +22,7 @@ class _UserListViewState extends State<UserListView> {
 
   @override
   Widget build(BuildContext context) {
-    final userViewModel = context.watch<
-        UserListViewModel>();
+    final userViewModel = context.watch<UserListViewModel>();
     final loginViewModel = context.watch<LoginViewModel>();
     final loggedInUser = loginViewModel.loggedInUser;
     final users = userViewModel.users;
@@ -41,30 +40,51 @@ class _UserListViewState extends State<UserListView> {
                 labelText: 'Buscar por nome',
                 border: OutlineInputBorder(),
               ),
-              onChanged: (query) {
-                userViewModel.searchUsers(query);
-              },
+              onChanged: userViewModel.searchUsers,
             ),
           ),
           Expanded(
             child: users.isEmpty
-                ? const Center(child: Text('Nenhum usuário disponível.'))
+                ? const Center(child: Text('Nenhum usuário disponível ou encontrado.'))
                 : ListView.builder(
               itemCount: users.length,
               itemBuilder: (context, index) {
                 final user = users[index];
                 final isFamiliar = loggedInUser?.familyMembers.contains(user.name) ?? false;
 
-                return ListTile(
-                  title: Text(user.name),
-                  subtitle: Text(user.email),
-                  trailing: Text(isFamiliar ? 'Familiar' : 'Cliente'),
+                return UserTile(
+                  name: user.name,
+                  email: user.email,
+                  isFamiliar: isFamiliar,
                 );
               },
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Widget para representar cada usuário na lista
+class UserTile extends StatelessWidget {
+  final String name;
+  final String email;
+  final bool isFamiliar;
+
+  const UserTile({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.isFamiliar,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(name),
+      subtitle: Text(email),
+      trailing: Text(isFamiliar ? 'Familiar' : 'Cliente'),
     );
   }
 }
