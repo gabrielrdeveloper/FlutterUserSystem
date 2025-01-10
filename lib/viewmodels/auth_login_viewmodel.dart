@@ -44,7 +44,7 @@ class LoginViewModel extends ChangeNotifier {
   /// Realiza logout do usuário
   void logout() {
     _loggedInUser = null;
-    _familyViewModel.clearFamilyMembers();
+    // _familyViewModel.clearFamilyMembers();
     notifyListeners();
   }
 
